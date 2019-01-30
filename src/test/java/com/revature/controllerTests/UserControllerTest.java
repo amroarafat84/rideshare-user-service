@@ -8,6 +8,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,10 +23,15 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.revature.rideforce.user.UserApplication;
 import com.revature.rideforce.user.beans.User;
 import com.revature.rideforce.user.beans.UserRegistrationInfo;
+import com.revature.rideforce.user.beans.UserRole;
+import com.revature.rideforce.user.controllers.UserController;
 import com.revature.rideforce.user.repository.UserRepository;
+import static org.mockito.Mockito.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = UserApplication.class)
@@ -36,8 +43,13 @@ public class UserControllerTest {
 	private MockMvc mockMvc;
 	
 	@Autowired
+	private UserContoller UserControllerMock = Mokito.mock(UserController.class);
+	
+	@Autowired
 	private UserRepository userRepository;
 	
+	private static final Logger log = LoggerFactory.getLogger(UserControllerTest.class);
+
 	// Current build allows anyone to get request all users, this should be changed to be more secure
 	@Test
 	public void loggedOutUserCanGetUsers() throws Exception {
@@ -51,7 +63,7 @@ public class UserControllerTest {
 	
 	@Test
 	public void loggedOutUserCannotPostUsers() throws Exception {
-		this.mockMvc.perform(post("/users")).andExpect(status().isUnsupportedMediaType());
+		this.mockMvc.perform(post("/users")).andExpect(status().is4xxClientError());
 	}
 	
 	@Test
@@ -112,29 +124,33 @@ public class UserControllerTest {
 	// Logged out user get requests permissions may be security concern
 	@Test
 	public void loggedOutUserCanGetByOfficeIdAndRole() throws Exception {
+		log.trace("office = 1 role = ADMIN");
 		this.mockMvc.perform(get("/users?office=1&role=ADMIN")).andExpect(status().isOk());
 	}
 	
 	@Test
 	public void loggedOutUserBadRequestByEmptyOfficeIdAndEmptyRole() throws Exception {
+		log.trace("office = empty role = empty");
 		this.mockMvc.perform(get("/users?office=&role=")).andExpect(status().isBadRequest());
 	}
 	
 	@Test
-	public void loggedOutUserBadRequestByEmptyOfficeIdAndValidRole() throws Exception {
-		this.mockMvc.perform(get("/users?office=&role=ADMIN")).andExpect(status().isBadRequest());
+	public void loggedOutUserNotFoundByValidOfficeIdAndEmptyRole() throws Exception {
+		log.trace("office = 1 role = empty" );
+		this.mockMvc.perform(get("/users?office=1&role=")).andExpect(status().isBadRequest());
 	}
 	
 	@Test
-	public void loggedOutUserNotFoundByValidOfficeIdAndEmptyRole() throws Exception {
-		this.mockMvc.perform(get("/users?office=1&role=")).andExpect(status().isBadRequest());
+	public void loggedOutUserNotFoundByEmptyOfficeIdAndvalideRole() throws Exception{
+		log.trace("office = empty role = ADMIN" );
+		this.mockMvc.perform(get("/users?office=&role=ADMIN")).andExpect(status().isBadRequest());
 	}
 	
 	
 	@Test
 	public void loggedOutUserNotFoundGetByInvalidId() throws Exception {
 		this.mockMvc.perform(get("/users/-1")).andExpect(status().isNotFound());
-	}
+	} 
 	
 	@Test
 	public void loggedOutUserBadRequestGetByStringId() throws Exception {
@@ -147,7 +163,7 @@ public class UserControllerTest {
 		this.mockMvc.perform(get("/users?email=adMIN@REVature.com")).andExpect(status().is2xxSuccessful());
 	}
 	
-	@Test()
+	@Test
 	public void loggedOutUserCantDeleteAccount() throws Exception
 	{
 		this.mockMvc.perform(delete("/users/1")).andExpect(status().isForbidden()); //should be forbidden since not logged in
@@ -163,5 +179,48 @@ public class UserControllerTest {
 		this.mockMvc.perform(delete("/users/1")).andExpect(status().is2xxSuccessful());
 		SecurityContextHolder.getContext().setAuthentication(null);
 		
+	}
+	
+	@Transactional
+	@Test
+	public void loggedInUserCanSaveAccount() throws Exception{
+		User user = userRepository.findById(1); 
+		SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(user, "password", user.getAuthorities()));
+		this.mockMvc.perform(put("/users/1").contentType(MediaType.APPLICATION_JSON)
+				.content("{\"firstName\":\"fname\",\"lastName\":\"lname\",\"email\":\"email@email.com\",\"password\":\"password\"}"))
+				.andExpect(status().is2xxSuccessful());
+		SecurityContextHolder.getContext().setAuthentication(null);
+	}
+	
+	//This is to test out registration user currently gets 400 error
+	@Test
+	public void registerUserTest() throws Exception{
+		log.trace("register user test");
+		User user = new User();
+		UserRole userR = new UserRole(); 
+		userR.setType("DRIVER");
+		user.setFirstName("john");
+		user.setLastName("doe");
+		user.setEmail("jdoe@email.com");
+		user.setPassword("password");
+		user.setRole(userR);
+		UserRegistrationInfo ur = new UserRegistrationInfo(); 
+		ur.setUser(user);
+		ur.setPassword("password");
+		ur.setRegistrationKey("mykey");
+		
+		ObjectMapper mapper = new ObjectMapper(); 
+		mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
+		ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter(); 
+		
+		String requestJson = ow.writeValueAsString(ur);
+		
+		SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(user, "password", user.getAuthorities()));
+		log.trace("register user test before mock");
+		this.mockMvc.perform(post("/users/registration").contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+			.content(requestJson))
+			.andExpect(status().isCreated());
+		
+		SecurityContextHolder.getContext().setAuthentication(null);
 	}
 }

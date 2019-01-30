@@ -32,6 +32,7 @@ public class UserService extends CrudService<User> {
 	static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 	private UserRepository userRepository;
 	
+	
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 	
@@ -90,7 +91,7 @@ public class UserService extends CrudService<User> {
 	 * @throws PermissionDeniedException if the user inputs the wrong <strong> oldPassword</strong>
 	 * @throws EmptyPasswordException if the user inputs a new password but it's empty
 	 */
-	public void updatePassword(User user, String oldPassword, String newPassword) throws PermissionDeniedException, EmptyPasswordException {
+	public User updatePassword(User user, String oldPassword, String newPassword) throws PermissionDeniedException, EmptyPasswordException {
 		User loggedIn = authenticationService.getCurrentUser();
 		// Check permission to update password. Admins can update anyone's
 		// password, provided they know the old password.
@@ -106,6 +107,7 @@ public class UserService extends CrudService<User> {
 		user.setPassword(newPassword);   //will encode in the setter
 		userRepository.save(user);
     log.info("updated user: " + user);
+		return user;
 	}
 	
 	/**

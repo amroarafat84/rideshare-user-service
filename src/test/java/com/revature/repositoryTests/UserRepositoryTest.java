@@ -19,9 +19,11 @@ import com.revature.rideforce.user.beans.Office;
 import com.revature.rideforce.user.beans.User;
 import com.revature.rideforce.user.beans.UserRole;
 import com.revature.rideforce.user.exceptions.EmptyPasswordException;
+import com.revature.rideforce.user.exceptions.PermissionDeniedException;
 import com.revature.rideforce.user.repository.OfficeRepository;
 import com.revature.rideforce.user.repository.UserRepository;
 import com.revature.rideforce.user.repository.UserRoleRepository;
+import com.revature.rideforce.user.services.UserService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = UserApplication.class)
@@ -37,6 +39,9 @@ public class UserRepositoryTest {
 	
 	@Autowired
 	private OfficeRepository officeRepo;
+	
+	@Autowired
+	private UserService us; 
 	
 	private User user;
 	

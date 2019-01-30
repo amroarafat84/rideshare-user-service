@@ -81,6 +81,8 @@ public class UserController {
 	public ResponseEntity<?> findByOfficeAndRole(@RequestParam("office") int officeId,
 			@RequestParam("role") String roleString) {
 		try {
+			log.trace("office: " + officeId);
+			log.trace("role: " + roleString);
 			Office office = officeService.findById(officeId);
 			if (office == null) {
 				return new ResponseError("Office with ID " + officeId + DNE)
@@ -91,7 +93,7 @@ public class UserController {
 				return new ResponseError(roleString + " is not a valid user role.")
 						.toResponseEntity(HttpStatus.BAD_REQUEST);
 			}
-
+ 
 			return ResponseEntity.ok(userService.findByOfficeAndRole(office, role));
 		} catch (PermissionDeniedException e) {
 			return new ResponseError(e).toResponseEntity(HttpStatus.FORBIDDEN);
@@ -109,8 +111,9 @@ public class UserController {
 		}
 	}
 
-	@PostMapping(consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@PostMapping(value = "/registration", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<?> add(@RequestBody @Valid UserRegistrationInfo registration) {
+		System.out.print("HEYHEYEHEYim in this thingy");
 		try {
 			User user = registration.getUser(); //change the user's email to lowercase then save user back to registration info
 			user.setEmail(user.getUsername().toLowerCase());
@@ -149,7 +152,7 @@ public class UserController {
 			return new ResponseError(e).toResponseEntity(HttpStatus.FORBIDDEN);
 		}
 	}
-	
+
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@DeleteMapping(value = "/{id}")
 	public ResponseEntity<?> delete(@PathVariable("id") int id) throws PermissionDeniedException {
@@ -164,4 +167,6 @@ public class UserController {
 		else {
 			return (ResponseEntity<?>) ResponseEntity.notFound();}
 	}
+	
+	
 }

@@ -43,7 +43,7 @@ public class RegistrationKeyController {
 		User loggedIn = authenticationService.getCurrentUser();
 		if (!loggedIn.isTrainer() && !loggedIn.isAdmin()) {
 			return new ResponseError("Only trainers and admins can generate registration tokens.")
-					.toResponseEntity(HttpStatus.FORBIDDEN);
+					.toResponseEntity(HttpStatus.FORBIDDEN); 
 		}
 		return ResponseEntity.ok('"' + tokenProvider.generateToken() + '"');
 	}

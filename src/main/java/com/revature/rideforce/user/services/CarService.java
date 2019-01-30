@@ -43,8 +43,7 @@ public class CarService extends CrudService<Car> {
     @param Car the car object whose recorded user must be checked against the user trying to access
     @return true if user is admin or owner of car
     */
-	@Override
-	protected boolean canAdd(User user, Car obj) {
+	public boolean canAdd(User user, Car obj) {
 		// Users can only add cars for themselves, except admins who can add
 		// cars to any user.
 		return user != null && (user.isAdmin() || user.getId() == obj.getOwner().getId());
@@ -55,8 +54,7 @@ public class CarService extends CrudService<Car> {
     @param Car the car object whose recorded user must be checked against the user trying to access
     @return true if user is admin or owner
     */
-	@Override
-	protected boolean canSave(User user, Car obj) {
+	public boolean canSave(User user, Car obj) {
 		// Users can only save cars for themselves, except admins who can save
 		// cars for any user.
 		return user != null && (user.isAdmin() || user.getId() == obj.getOwner().getId());
