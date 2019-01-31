@@ -6,8 +6,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +33,8 @@ import com.revature.rideforce.user.beans.UserRegistrationInfo;
 import com.revature.rideforce.user.beans.UserRole;
 import com.revature.rideforce.user.controllers.UserController;
 import com.revature.rideforce.user.repository.UserRepository;
+import com.revature.rideforce.user.services.UserService;
+
 import static org.mockito.Mockito.*;
 
 @RunWith(SpringRunner.class)
@@ -43,19 +47,16 @@ public class UserControllerTest {
 	private MockMvc mockMvc;
 	
 	@Autowired
-	private UserContoller UserControllerMock = Mokito.mock(UserController.class);
-	
-	@Autowired
 	private UserRepository userRepository;
 	
 	private static final Logger log = LoggerFactory.getLogger(UserControllerTest.class);
-
+	
 	// Current build allows anyone to get request all users, this should be changed to be more secure
 	@Test
 	public void loggedOutUserCanGetUsers() throws Exception {
 		this.mockMvc.perform(get("/users")).andExpect(status().isOk());
 	}
-
+	
 	@Test
 	public void loggedOutUserCanGetUsersById() throws Exception {
 		this.mockMvc.perform(get("/users/1")).andExpect(status().isOk());

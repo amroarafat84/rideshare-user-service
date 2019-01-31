@@ -31,8 +31,7 @@ import com.revature.rideforce.user.repository.UserRepository;
 public class UserService extends CrudService<User> {
 	static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 	private UserRepository userRepository;
-	
-	
+
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 	
