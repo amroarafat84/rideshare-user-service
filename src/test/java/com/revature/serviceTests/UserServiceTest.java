@@ -23,6 +23,7 @@ import com.revature.rideforce.user.services.UserService;
 
 import javax.transaction.Transactional;
 
+import org.assertj.core.api.Assertions;
 import org.junit.Assert;
 
 
@@ -31,47 +32,31 @@ import org.junit.Assert;
 @Transactional
 @DirtiesContext(classMode = ClassMode.AFTER_CLASS)
 public class UserServiceTest {
+	
 	@TestConfiguration
 	static class UserServiceTestContextConfiguration{
 		@Bean
 		public UserService userService(UserRepository userRepository) {
 			return new UserService(userRepository);
 		}
-		
-		
 	}
 	
 	@InjectMocks
 	@Autowired
 	private UserService userService;
 	
-	@MockBean
+	@Autowired
 	private UserRepository userRepository;
 	
-//	@Before
-//	public void setup() throws EmptyPasswordException {		
-//		Mockito.when(userRepository.findById(u.getId())).thenReturn(u);
-//	}
+	@Before
+	public void setup() {
+		userService = (UserService) Mockito.mock(UserRepository.class);
+	}
 	
 	@Test
-	public void getUserByEmailTest() throws Exception{
-		User uTest = new User(); 	//Testing
-		User uResult = new User();	//Result
-		UserRegistrationInfo ur = new UserRegistrationInfo();
-		uTest.setFirstName("John");
-		uTest.setLastName("Doe");
-		uTest.setAddress("123 Address RD");
-		uTest.setEmail("jdoe@email.com");
-		uTest.setId(1);
-		ur.setUser(uTest);
-		ur.setPassword("password");
-		ur.setRegistrationKey("key");
-		uTest.setPassword(ur.getPassword());
-		Mockito.doReturn(uResult).when(Mockito.spy(UserService.class).findByEmail("jdoe@email.com"));
-		Assert.assertEquals(uTest.getUsername(), uResult.getUsername());
+	public void findByEmailTest() throws Exception{
 		
-//		Mockito.doReturn(uTest).when(Mockito.spy(UserService.class).findByEmail("jdoe@email.com"));
-//		Assert.assertEquals("jdoe@email.com", uTest.getUsername());
 	}
+	
 	
 }
