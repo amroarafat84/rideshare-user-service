@@ -1,10 +1,8 @@
 package com.revature.rideforce.user.services;
 
-import java.lang.invoke.MethodHandles;
 import java.util.List;
 
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -13,7 +11,6 @@ import com.revature.rideforce.user.beans.Office;
 import com.revature.rideforce.user.beans.User;
 import com.revature.rideforce.user.beans.UserRole;
 import com.revature.rideforce.user.exceptions.EmailAlreadyUsedException;
-import com.revature.rideforce.user.exceptions.EmptyPasswordException;
 import com.revature.rideforce.user.exceptions.EntityConflictException;
 import com.revature.rideforce.user.exceptions.PermissionDeniedException;
 import com.revature.rideforce.user.repository.UserRepository;
@@ -29,11 +26,16 @@ import com.revature.rideforce.user.repository.UserRepository;
  */
 @Service
 public class UserService extends CrudService<User> {
+<<<<<<< HEAD
 	static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 	private UserRepository userRepository;
 
+=======
+>>>>>>> 1f885749d81721bd144e81b8e7c865b60e54394a
 	@Autowired
-	private PasswordEncoder passwordEncoder;
+	private Logger log;
+	private UserRepository userRepository;
+
 	
 	/**
 	 * constructor injects repository dependency
@@ -43,8 +45,6 @@ public class UserService extends CrudService<User> {
 	public UserService(UserRepository userRepository) {
 		super(userRepository);
 		this.userRepository = userRepository;
-    log.info("UserService created");
-    log.debug("UserService.userRepository initialized to: {}", userRepository);
 	}
 
 	/**
@@ -83,6 +83,7 @@ public class UserService extends CrudService<User> {
 		return userRepository.findByOfficeAndRole(office, role);
 	}
 	
+<<<<<<< HEAD
 	/**Lets the user change the account password
 	 * @param user the account which will have its password changed
 	 * @param oldPassword <code>String</code> current password user inputs
@@ -109,6 +110,8 @@ public class UserService extends CrudService<User> {
 		return user;
 	}
 	
+=======
+>>>>>>> 1f885749d81721bd144e81b8e7c865b60e54394a
 	/**
 	 * delete the User object if there is someone logged in, and that person is either the same User or an admin user
 	 * @param user User to be deleted from db
