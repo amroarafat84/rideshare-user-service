@@ -74,15 +74,15 @@ public class CarServiceTest {
 		Assertions.assertThat( carService.findByOwner(owner) ).isNotNull();
 		
 		SecurityContextHolder.getContext().setAuthentication(null);
-	
+	 
     }
     
-//    @Test
-//    public void canAddTest() {
-//    	User admin = new User();
-//    	UserRole role = new UserRole(1, "ADMIN");
-//    	admin.setRole(role);
-//    	Assertions.assertThat(carService.canAdd(admin, new Car));
-//    }
+    @Test
+    public void canAddTest() {
+    	User admin = new User();
+    	UserRole role = new UserRole(1, "ADMIN");
+    	admin.setRole(role);
+    	Assertions.assertThat(carService.canAdd(admin, new Car()));
+    }
     
 }
