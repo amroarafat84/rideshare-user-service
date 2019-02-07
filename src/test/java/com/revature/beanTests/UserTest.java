@@ -420,12 +420,12 @@ public class UserTest {
 		Assertions.assertThat(changeUserModel.getEmail().equals("email@gmail.com")).isTrue();
 	}
 	
-	@Test 
-	public void changeUserModelSetPhotoUrl() {
-		ChangeUserModel changeUserModel = new ChangeUserModel();
-		changeUserModel.setPhotoUrl("google.com");
-		Assertions.assertThat(changeUserModel.getPhotoUrl().equals("google.com")).isTrue();
-	}
+//	@Test 
+//	public void changeUserModelSetPhotoUrl() {
+//		ChangeUserModel changeUserModel = new ChangeUserModel();
+//		changeUserModel.setPhotoUrl("google.com");
+//		Assertions.assertThat(changeUserModel.getPhotoUrl().equals("google.com")).isTrue();
+//	}
 	
 	@Test 
 	public void changeUserModelSetAddress() {
@@ -450,12 +450,12 @@ public class UserTest {
 		Assertions.assertThat(changeUserModel.getBatchEnd().equals(date)).isTrue();
 	}
 	
-	@Test 
-	public void changeUserModelSetRole() {
-		ChangeUserModel changeUserModel = new ChangeUserModel();
-		changeUserModel.setRole("ADMIN");
-		Assertions.assertThat(changeUserModel.getRole().equals("ADMIN")).isTrue();
-	}
+//	@Test 
+//	public void changeUserModelSetRole() {
+//		ChangeUserModel changeUserModel = new ChangeUserModel();
+//		changeUserModel.setRole("ADMIN");
+//		Assertions.assertThat(changeUserModel.getRole().equals("ADMIN")).isTrue();
+//	}
 	
 	@Test 
 	public void changeUserModelSetActive() {
@@ -568,12 +568,12 @@ public class UserTest {
 		Assertions.assertThat(u.getStartTime() == -2).isTrue();
 	}
 	
-	@Test
-	public void changeUserModelChangeUserTest10() {
-		ChangeUserModel changeUserModel = new ChangeUserModel();
-		u.setPhotoUrl("Original.com");
-		changeUserModel.setPhotoUrl("New.com");
-		changeUserModel.changeUser(u);
-		Assertions.assertThat(u.getPhotoUrl().equals("New.com")).isTrue();
-	}
+//	@Test
+//	public void changeUserModelChangeUserTest10() {
+//		ChangeUserModel changeUserModel = new ChangeUserModel();
+//		u.setPhotoUrl("Original.com");
+//		changeUserModel.setPhotoUrl("New.com");
+//		changeUserModel.changeUser(u);
+//		Assertions.assertThat(u.getPhotoUrl().equals("New.com")).isTrue();
+//	}
 }

@@ -2,10 +2,16 @@ package com.revature.rideforce.user.beans.forms;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.revature.rideforce.user.beans.Office;
 import com.revature.rideforce.user.beans.User;
+import com.revature.rideforce.user.beans.UserRole;
 import com.revature.rideforce.user.exceptions.EmptyPasswordException;
 import com.revature.rideforce.user.json.Active;
+import com.revature.rideforce.user.json.JsonEnumLike;
+import com.revature.rideforce.user.json.JsonLink;
+import com.revature.rideforce.user.json.OfficeLinkResolver;
+import com.revature.rideforce.user.json.UserRoleResolver;
 
 public class ChangeUserModel {
 
@@ -14,13 +20,15 @@ public class ChangeUserModel {
 	private String lastName;
 	private String password;
 	private String email;
-	private String photoUrl;
 	private String address;
+	@JsonLink(OfficeLinkResolver.class)
 	private Office office;
 	private float startTime;
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "UTC")
 	private Date batchEnd;
 	private String bio;
-	private String role;
+	@JsonEnumLike(UserRoleResolver.class)
+	private UserRole role;
 	private Active active;
 //	private String active;
 
@@ -32,8 +40,6 @@ public class ChangeUserModel {
 			original.setLastName(lastName);
 		if(email != null)
 			original.setEmail(email.toLowerCase());
-		if(photoUrl != null)
-			original.setPhotoUrl(photoUrl);
 		if(address != null)
 			original.setAddress(address);
 		if(bio != null)
@@ -109,19 +115,6 @@ public class ChangeUserModel {
 	}
 
 
-
-	public String getPhotoUrl() {
-		return photoUrl;
-	}
-
-
-
-	public void setPhotoUrl(String photoUrl) {
-		this.photoUrl = photoUrl;
-	}
-
-
-
 	public String getAddress() {
 		return address;
 	}
@@ -170,13 +163,13 @@ public class ChangeUserModel {
 
 
 
-	public String getRole() {
+	public UserRole getRole() {
 		return role;
 	}
 
 
 
-	public void setRole(String role) {
+	public void setUserRole(UserRole role) {
 		this.role = role;
 	}
 
@@ -197,7 +190,7 @@ public class ChangeUserModel {
 	@Override
 	public String toString() {
 		return "ChangeUserModel [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", password="
-				+ password + ", email=" + email + ", photoUrl=" + photoUrl + ", address=" + address + ", office="
+				+ password + ", email=" + email + ", address=" + address + ", office="
 				+ office + ", startTime=" + startTime + ", batchEnd=" + batchEnd + ", role=" + role + ", active="
 				+ active + "]";
 	}
